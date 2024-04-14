@@ -1,4 +1,5 @@
-from modules import * 
+from modules import *
+
 
 class MLP(object):
     def __init__(self, n_inputs, n_hidden, n_classes):
@@ -16,7 +17,15 @@ class MLP(object):
         """
         # Hint: You can use a loop to create the necessary number of layers and add them to a list.
         # Remember to initialize the weights and biases in each layer.
-        
+        self.layers = []
+        prev_size = n_inputs
+        for unit_size in n_hidden:
+            self.layers.append(Linear(prev_size, unit_size))
+            self.layers.append(ReLU())
+            prev_size = unit_size
+        self.layers.append(Linear(prev_size, n_classes))
+        self.layers.append(SoftMax())
+
     def forward(self, x):
         """
         Predicts the network output from the input by passing it through several layers.
@@ -34,9 +43,11 @@ class MLP(object):
         # Start with the input as the initial output
         out = x  
         
-        # TODO: Implement the forward pass through each layer.
+        # Implement the forward pass through each layer.
         # Hint: For each layer in your network, you will need to update 'out' to be the layer's output.
-        
+        for layer in self.layers:
+            out = layer.forward(out)
+
         return out
 
     def backward(self, dout):
@@ -50,7 +61,10 @@ class MLP(object):
         Args:
             dout (numpy.ndarray): Gradients of the loss with respect to the output of the network.
         """
-        # TODO: Implement the backward pass through each layer.
+        # Implement the backward pass through each layer.
         # Hint: You will need to update 'dout' to be the gradient of the loss with respect to the input of each layer.
-        
+
         # No need to return anything since the gradients are stored in the layers.
+
+        for layer in reversed(self.layers):
+            dout = layer.backward(dout)

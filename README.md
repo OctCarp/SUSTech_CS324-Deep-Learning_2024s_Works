@@ -1,9 +1,9 @@
 # SUSTech_CS324-DL_2024s_Works
  Course code of CS324 2024 Spring: Deep Learning, SUSTech. Taught by Prof. Jianguo ZHANG.
 
-| Title                        | Content            | Grade |
-| ---------------------------- | ------------------ | ----- |
-| [Assignment 1](Assignment1/) | Perceptron and MLP |       |
-| [Assignment 2](Assignment2/) | CNN and RNN        |       |
-|                              |                    |       |
+| Title                        | Content            | Grade   |
+| ---------------------------- | ------------------ | ------- |
+| [Assignment 1](Assignment1/) | Perceptron and MLP | 100/100 |
+| [Assignment 2](Assignment2/) | CNN and RNN        |         |
+|                              |                    |         |
 
