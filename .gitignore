@@ -153,6 +153,7 @@ cython_debug/
 
 # my test files:
 test.py
+/temp/
 
 # Submissions
 *.zip
