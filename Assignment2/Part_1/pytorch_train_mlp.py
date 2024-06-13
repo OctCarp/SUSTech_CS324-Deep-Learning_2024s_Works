@@ -2,9 +2,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
-import numpy as np
-import os
+import torch
+import torch.nn as nn
+
 from pytorch_mlp import MLP
 
 # Default constants
@@ -15,7 +15,8 @@ EVAL_FREQ_DEFAULT = 10
 
 FLAGS = None
 
-def accuracy(predictions, targets):
+
+def accuracy(predictions, labels):
     """
     Computes the prediction accuracy, i.e., the average of correct predictions
     of the network.
@@ -23,34 +24,67 @@ def accuracy(predictions, targets):
         predictions: 2D float array of size [number_of_data_samples, n_classes]
         labels: 2D int array of size [number_of_data_samples, n_classes] with one-hot encoding of ground-truth labels
     Returns:
-        accuracy: scalar float, the accuracy of predictions.
+        acc: scalar float, the accuracy of predictions.
     """
-    return accuracy
+    predicted_classes = torch.argmax(predictions, dim=1)
+    targets_classes = torch.argmax(labels, dim=1)
+    correct = torch.sum(predicted_classes == targets_classes)
+    acc = correct / predictions.shape[0]
+    return acc
 
-def train():
+
+def train(data, dnn_hidden_units=DNN_HIDDEN_UNITS_DEFAULT,
+          learning_rate=LEARNING_RATE_DEFAULT,
+          max_steps=MAX_EPOCHS_DEFAULT,
+          eval_freq=EVAL_FREQ_DEFAULT):
     """
     Performs training and evaluation of MLP model.
     NOTE: You should the model on the whole test set each eval_freq iterations.
     """
-    # YOUR TRAINING CODE GOES HERE
+    torch.random.manual_seed(seed=42)
 
+    # Load your data here
+    train_x_ori, train_y_ori, test_x_ori, test_y_ori = data
+    train_x = torch.from_numpy(train_x_ori).float()
+    train_y = torch.from_numpy(train_y_ori).float()
+    test_x = torch.from_numpy(test_x_ori).float()
+    test_y = torch.from_numpy(test_y_ori).float()
 
-def main():
-    """
-    Main function
-    """
-    train()
+    # Initialize your MLP model and loss function (CrossEntropy) here
+    dnn_hidden_units = list(map(int, dnn_hidden_units.split(',')))
+    model = MLP(n_inputs=2, n_hidden=dnn_hidden_units, n_classes=2)
 
-if __name__ == '__main__':
-    # Command line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dnn_hidden_units', type = str, default = DNN_HIDDEN_UNITS_DEFAULT,
-                      help='Comma separated list of number of units in each hidden layer')
-    parser.add_argument('--learning_rate', type = float, default = LEARNING_RATE_DEFAULT,
-                      help='Learning rate')
-    parser.add_argument('--max_steps', type = int, default = MAX_EPOCHS_DEFAULT,
-                      help='Number of epochs to run trainer.')
-    parser.add_argument('--eval_freq', type=int, default=EVAL_FREQ_DEFAULT,
-                          help='Frequency of evaluation on the test set')
-    FLAGS, unparsed = parser.parse_known_args()
-    main()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+
+    eval_steps = []
+    train_acc_list = []
+    test_acc_list = []
+    train_loss_list = []
+    test_loss_list = []
+
+    for step in range(max_steps):
+        model.train()
+        pred_y = model(train_x)
+        loss = loss_fn(pred_y, train_y)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        train_loss = loss.item()
+
+        if step % eval_freq == 0 or step == max_steps - 1:
+            model.eval()
+            train_acc = accuracy(pred_y, train_y)
+            test_predictions = model.forward(test_x)
+            test_acc = accuracy(test_predictions, test_y)
+
+            eval_steps.append(step)
+            train_acc_list.append(train_acc)
+            test_acc_list.append(test_acc)
+
+            test_loss = loss_fn(test_predictions, test_y).item()
+            train_loss_list.append(train_loss)
+            test_loss_list.append(test_loss)
+
+    return eval_steps, train_acc_list, test_acc_list, train_loss_list, test_loss_list

@@ -15,9 +15,9 @@ class AverageMeter(object):
 
     def update(self, val, n=1):
         self.val = val
-        self.sum += val*n
+        self.sum += val * n
         self.count += n
-        self.avg = self.sum/self.count
+        self.avg = self.sum / self.count
 
     def __str__(self):
         fmtstr = '{name}: {val' + self.fmt + '} ({avg' + self.fmt + '})'
@@ -26,4 +26,7 @@ class AverageMeter(object):
 
 @torch.no_grad()
 def accuracy(output, target):
-    # Implementation here ...
+    _, predicted = torch.max(output, 1)
+    correct = (predicted == target).sum().item()
+
+    return correct / target.size(0)

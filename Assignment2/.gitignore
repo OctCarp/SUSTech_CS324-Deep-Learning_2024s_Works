@@ -1,0 +1,4 @@
+# ignore all data download in this folder
+
+/data/*
+
