@@ -18,9 +18,9 @@ class PalindromeDataset(data.Dataset):
             one_hot: whether to use one-hot encoding or not
         """
         self.input_length = input_length
-        self.seq_length = input_length+1
+        self.seq_length = input_length + 1
         self.one_hot = one_hot
-        self.half_length = math.ceil(self.seq_length/2)
+        self.half_length = math.ceil(self.seq_length / 2)
         max_num = 10 ** self.half_length
         self.total_len = total_len
         if self.total_len > max_num:
@@ -29,7 +29,7 @@ class PalindromeDataset(data.Dataset):
             print(
                 "Warning: access length of dataset by len(dataset) to get the actual length. ")
             self.total_len = 10 ** self.half_length
-        self.data = np.random.default_rng().choice(
+        self.data = np.random.default_rng(seed=42).choice(
             max_num, self.total_len, replace=False)
         self.mapping = np.eye(10) if one_hot else np.arange(10).reshape(10, 1)
 

@@ -1,0 +1,10 @@
+## ignore the full result of lastest output
+/Part_2/images/temp/
+
+
+## ignore part 2 the model
+/Part_2/model/*
+!/Part_2/model/mnist_generator_final.pt
+
+## ignore part 2 mnist data
+/Part_2/data/*

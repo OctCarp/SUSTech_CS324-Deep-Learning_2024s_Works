@@ -6,8 +6,8 @@
 | Title                        | Content          | Grade   |
 | ---------------------------- | ---------------- | ------- |
 | [Assignment 1](Assignment1/) | Perceptron & MLP | 100/100 |
-| [Assignment 2](Assignment2/) | CNN & RNN        |         |
-| [Assignment 3](Assignment3/) | LSTM & GAN       |         |
+| [Assignment 2](Assignment2/) | CNN & RNN        | 100/100 |
+| [Assignment 3](Assignment3/) | LSTM & GAN       | 100/100 |
 
 ### Build Environment
 
